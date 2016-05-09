@@ -1,32 +1,30 @@
+require 'csv'
+
 filename = "fake_fight_data.csv"
 
 punches = ["1", "2", "3", "6", "-", "+", "9"]
 
-event_times = Array.new(100) { (180.0 * rand).round(0) }.uniq.sort
 
 blue_data = []
-event_times.each do |time|
-  blue_data << { :time => time, :punch => punches.sample }
+red_data =  []
+
+Array.new(100) { (180.0 * rand).round(0) }.uniq.each do |time|
+  blue_data <<  ["b", time, punches.sample]
 end
 
-# blue_data.sort_by! do |event|
-#   event[:time]
-# end
-
+Array.new(100) { (180.0 * rand).round(0) }.uniq.each do |time|
+  red_data <<  ["r", time, punches.sample]
+end
+red_data.sort!
+blue_data.sort!
 puts blue_data
+puts red_data
 
-CSV.open("path/to/file.csv", "wb") do |csv|
+CSV.open(filename, "wb") do |csv|
+  csv << ["corner", "event_time", "strike"]
 
-  
-  csv << ["row", "of", "CSV", "data"]
-  csv << ["another", "row"]
-  # ...
+  blue_data.concat(red_data).each do |event|
+    # require 'pry-byebug'; binding.pry
+    csv << event
+  end
 end
-
-
-
-
-
-file = File.open(filename, "w")
-file.write(blue_data)
-file.close
